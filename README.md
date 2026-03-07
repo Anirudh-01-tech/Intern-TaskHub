@@ -1,4 +1,4 @@
-# Intern TaskHub — Full-Stack (Plug & Play)
+# Intern TaskHub Full Stack project
 
 ## Tech stack
 - Backend: Node.js (Express)  Prisma  PostgreSQL  JWT  Zod validation
