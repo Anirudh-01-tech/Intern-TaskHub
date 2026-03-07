@@ -7,7 +7,7 @@
 
 ---
 
-## Quick start (Docker — easiest)
+## Quick start (with docker)
 1) Install Docker Desktop
 2) From project root:
 
