@@ -1,9 +1,9 @@
 # Intern TaskHub — Full-Stack (Plug & Play)
 
 ## Tech stack
-- Backend: Node.js (Express) + Prisma + PostgreSQL + JWT + Zod validation
-- Frontend: React (Vite + TypeScript) + Tailwind CSS + React Router
-- DevOps: Docker + Docker Compose
+- Backend: Node.js (Express)  Prisma  PostgreSQL  JWT  Zod validation
+- Frontend: React (Vite and  TypeScript)  Tailwind CSS  React Router
+- DevOps: Docker  Docker Compose
 
 ---
 
@@ -58,7 +58,7 @@ npm run dev
 ---
 
 ## Project structure
-- `backend/` Express API + Prisma + OpenAPI docs
-- `frontend/` React UI + Tailwind
+- `backend/` Express API  Prisma  OpenAPI docs
+- `frontend/` React UI  Tailwind
 - `docs/` Notes and API overview
 
