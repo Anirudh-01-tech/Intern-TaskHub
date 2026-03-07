@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MANAGER
+  INTERN
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  BLOCKED
+  READY_FOR_REVIEW
+  DONE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum ActivityType {
+  USER_REGISTERED
+  USER_LOGIN
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_ASSIGNED
+  TASK_STATUS_CHANGED
+  COMMENT_ADDED
+  COMMENT_PRIVATE_ADDED
+  TASK_DELETED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(INTERN)
+  managerId    String?
+  manager      User?    @relation("ManagerInterns", fields: [managerId], references: [id])
+  interns      User[]   @relation("ManagerInterns")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdTasks Task[]   @relation("CreatedTasks")
+  assignments  TaskAssignee[]
+  comments     Comment[]
+  activities   ActivityLog[] @relation("ActorActivities")
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  description String
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(MEDIUM)
+  dueDate     DateTime?
+  createdById String
+  createdBy   User       @relation("CreatedTasks", fields: [createdById], references: [id])
+
+  assignees   TaskAssignee[]
+  comments    Comment[]
+  activities  ActivityLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([dueDate])
+}
+
+model TaskAssignee {
+  taskId String
+  userId String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, userId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  taskId    String
+  authorId  String
+  body      String
+  isPrivate Boolean  @default(false)
+
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model ActivityLog {
+  id         String       @id @default(cuid())
+  actorId    String?
+  actor      User?        @relation("ActorActivities", fields: [actorId], references: [id], onDelete: SetNull)
+  type       ActivityType
+  entityType String
+  entityId   String
+  metadata   Json?
+
+  taskId     String?
+  task       Task?        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+
+  @@index([type])
+  @@index([entityType, entityId])
+  @@index([taskId])
+}
