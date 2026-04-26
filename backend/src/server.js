@@ -13,6 +13,7 @@ import { authRouter } from "./routes/auth.js";
 import { usersRouter } from "./routes/users.js";
 import { tasksRouter } from "./routes/tasks.js";
 import { activityRouter } from "./routes/activity.js";
+import { assistantRouter } from "./routes/assistant.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -35,6 +36,7 @@ app.use("/auth", authRouter);
 app.use("/users", usersRouter);
 app.use("/tasks", tasksRouter);
 app.use("/activity", activityRouter);
+app.use("/assistant", assistantRouter);
 
 app.use(errorHandler);
 

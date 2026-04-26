@@ -130,7 +130,7 @@ export function TaskDetail() {
       </Card>
 
       <Card>
-        <CardHeader title="Comments"/>
+        <CardHeader title="Comments" subtitle="Public discussion + manager-only private notes." />
         <CardBody>
           <div className="space-y-3">
             {task.comments.map((c) => (
@@ -175,7 +175,7 @@ export function TaskDetail() {
       </Card>
 
       <Card>
-        <CardHeader title="Audit history" />
+        <CardHeader title="Audit history" subtitle="Every status change and comment is logged." />
         <CardBody>
           <div className="space-y-2">
             {activity.map((a) => (

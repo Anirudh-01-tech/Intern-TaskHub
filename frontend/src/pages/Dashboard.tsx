@@ -46,30 +46,52 @@ export function Dashboard() {
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
     if (!term) return tasks;
-    return tasks.filter(t => (t.title + " " + t.description).toLowerCase().includes(term));
+    return tasks.filter((t) => (t.title + " " + t.description).toLowerCase().includes(term));
   }, [tasks, q]);
+
+  const summaryCards = [
+    { label: "To do", value: metrics?.byStatus?.TODO ?? 0 },
+    { label: "In progress", value: metrics?.byStatus?.IN_PROGRESS ?? 0 },
+    { label: "Review", value: metrics?.byStatus?.READY_FOR_REVIEW ?? 0 },
+    { label: "Overdue", value: metrics?.overdueCount ?? 0 },
+  ];
 
   return (
     <div className="space-y-6">
+      {user?.role === "MANAGER" ? (
+        <div className="grid gap-4 lg:grid-cols-3">
+          {[
+            { title: "Task Control", caption: "Create and assign new work", to: "/tasks/new" },
+            { title: "Intern Profiles", caption: "Review interns and linked accounts", to: "/team" },
+            { title: "System Assistant", caption: "Navigate app flows and inspect code", to: "/assistant" },
+          ].map((card) => (
+            <Link key={card.title} to={card.to} className="rounded-2xl border border-slate-200 bg-[#ece9f0] p-6 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md">
+              <div className="text-2xl font-semibold text-slate-800">{card.title}</div>
+              <div className="mt-6 text-sm text-slate-500">{card.caption}</div>
+            </Link>
+          ))}
+        </div>
+      ) : null}
+
       <Card>
         <CardHeader
-          title="Dashboard"
-          subtitle={user?.role === "MANAGER" ? "Create tasks, assign interns, review work." : "Update status, comment, and submit tasks for review."}
+          title="Overview"
+          subtitle={user?.role === "MANAGER" ? "Create tasks, review progress, and manage your interns." : "View your assigned tasks and keep status updated."}
           right={
-            <div className="flex items-center gap-2">
-              <label className="flex items-center gap-2 text-sm text-slate-300">
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="flex items-center gap-2 text-sm text-slate-600">
                 <input
                   type="checkbox"
                   checked={overdue}
                   onChange={(e) => setOverdue(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-700 bg-slate-950"
+                  className="h-4 w-4 rounded border-slate-300"
                 />
-                Overdue
+                Overdue only
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="rounded-xl border border-slate-800 bg-slate-950/40 px-3 py-2 text-sm text-slate-100"
+                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700"
               >
                 <option value="">All statuses</option>
                 <option value="TODO">TODO</option>
@@ -83,21 +105,13 @@ export function Dashboard() {
           }
         />
         <CardBody>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-slate-800 bg-slate-950/40 p-4">
-              <div className="text-xs text-slate-500">Overdue</div>
-              <div className="mt-1 text-2xl font-semibold">{metrics?.overdueCount ?? "—"}</div>
-            </div>
-            <div className="rounded-2xl border border-slate-800 bg-slate-950/40 p-4 md:col-span-2">
-              <div className="text-xs text-slate-500">By status</div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {["TODO","IN_PROGRESS","BLOCKED","READY_FOR_REVIEW","DONE"].map((s) => (
-                  <Badge key={s}>
-                    {s}: {metrics?.byStatus?.[s] ?? 0}
-                  </Badge>
-                ))}
+          <div className="grid gap-4 md:grid-cols-4">
+            {summaryCards.map((item) => (
+              <div key={item.label} className="rounded-2xl border border-slate-200 bg-[#f7f9fc] p-4">
+                <div className="text-sm text-slate-500">{item.label}</div>
+                <div className="mt-2 text-3xl font-semibold text-slate-800">{item.value}</div>
               </div>
-            </div>
+            ))}
           </div>
 
           <div className="mt-5">
@@ -112,34 +126,32 @@ export function Dashboard() {
           <div className="space-y-3">
             {filtered.map((t) => {
               const due = t.dueDate ? new Date(t.dueDate) : null;
-              const isOverdue = due ? (due.getTime() < Date.now() && t.status !== "DONE") : false;
+              const isOverdue = due ? due.getTime() < Date.now() && t.status !== "DONE" : false;
 
               return (
                 <Link
                   key={t.id}
                   to={`/tasks/${t.id}`}
-                  className="block rounded-2xl border border-slate-800 bg-slate-950/40 p-4 transition hover:bg-slate-900/40"
+                  className="block rounded-2xl border border-slate-200 bg-white p-4 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md"
                 >
-                  <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                  <div className="flex flex-col justify-between gap-3 xl:flex-row xl:items-center">
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-base font-semibold text-slate-100">{t.title}</h3>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="text-base font-semibold text-slate-800">{t.title}</h3>
                         <Badge>{statusLabel(t.status)}</Badge>
                         {t.priority === "HIGH" ? <Badge>High</Badge> : null}
-                        {isOverdue ? <span className="text-xs font-semibold text-rose-300">Overdue</span> : null}
+                        {isOverdue ? <span className="text-xs font-semibold text-rose-600">Overdue</span> : null}
                       </div>
-                      <p className="mt-1 line-clamp-2 text-sm text-slate-400">{t.description}</p>
+                      <p className="mt-1 line-clamp-2 text-sm text-slate-500">{t.description}</p>
                     </div>
-                    <div className="text-sm text-slate-400">
+                    <div className="min-w-[180px] rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
                       {t.dueDate ? (
-                        <div>
-                          <div className="text-xs text-slate-500">Due</div>
-                          <div className={isOverdue ? "text-rose-200" : ""}>
-                            {new Date(t.dueDate).toLocaleString()}
-                          </div>
-                        </div>
+                        <>
+                          <div className="text-xs uppercase tracking-wide text-slate-400">Due</div>
+                          <div className={isOverdue ? "font-medium text-rose-600" : "font-medium text-slate-700"}>{new Date(t.dueDate).toLocaleString()}</div>
+                        </>
                       ) : (
-                        <div className="text-xs text-slate-500">No due date</div>
+                        <div className="text-sm text-slate-400">No due date</div>
                       )}
                     </div>
                   </div>
@@ -147,9 +159,7 @@ export function Dashboard() {
               );
             })}
             {filtered.length === 0 ? (
-              <div className="rounded-2xl border border-slate-800 bg-slate-950/30 p-8 text-center text-slate-400">
-                No tasks found.
-              </div>
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-500">No tasks found.</div>
             ) : null}
           </div>
         </CardBody>
