@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: taskhub
+      POSTGRES_PASSWORD: taskhub
+      POSTGRES_DB: taskhub
+    ports:
+      - "5432:5432"
+    volumes:
+      - taskhub_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskhub -d taskhub"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      DATABASE_URL: postgresql://taskhub:taskhub@db:5432/taskhub?schema=public
+      JWT_SECRET: "change-me-in-prod"
+      JWT_EXPIRES_IN: "2h"
+      CORS_ORIGIN: "http://localhost:5173"
+      SEED_ON_BOOT: "true"
+      PROJECT_ROOT: "/workspace"
+      ENABLE_FILE_EDITING: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./:/workspace
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: "http://localhost:4000"
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:4000
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  taskhub_db:
