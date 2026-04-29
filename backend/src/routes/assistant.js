@@ -1,11 +1,7 @@
 import express from "express";
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const assistantRouter = express.Router();
-
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 const PROJECT_CONTEXT = `
 You are the AI Assistant for Intern TaskHub.
@@ -60,7 +56,7 @@ If the user asks about code, explain the likely backend/frontend area, but do no
 assistantRouter.get("/ping", (req, res) => {
   res.json({
     ok: true,
-    message: "Assistant route is public and working",
+    message: "Gemini assistant route is public and working",
   });
 });
 
@@ -74,36 +70,38 @@ assistantRouter.post("/chat", async (req, res) => {
       });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
+    if (!process.env.GEMINI_API_KEY) {
       return res.status(500).json({
-        error: "OPENAI_API_KEY is missing in backend environment.",
+        error: "GEMINI_API_KEY is missing in backend environment.",
       });
     }
 
-    const response = await client.responses.create({
-      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-      input: [
-        {
-          role: "system",
-          content: PROJECT_CONTEXT,
-        },
-        {
-          role: "user",
-          content: message,
-        },
-      ],
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+    const model = genAI.getGenerativeModel({
+      model: process.env.GEMINI_MODEL || "gemini-1.5-flash",
     });
 
+    const prompt = `
+${PROJECT_CONTEXT}
+
+User question:
+${message}
+`;
+
+    const result = await model.generateContent(prompt);
+    const reply = result.response.text();
+
     return res.json({
-      reply: response.output_text || "Sorry, I could not generate a response.",
+      reply: reply || "Sorry, I could not generate a response.",
     });
   } catch (error) {
-    console.error("Assistant error:", error);
+    console.error("Gemini Assistant error:", error);
 
     return res.status(500).json({
       error:
         error?.message ||
-        "Assistant failed to respond. Check backend logs and API key.",
+        "Assistant failed to respond. Check backend logs and Gemini API key.",
     });
   }
 });
