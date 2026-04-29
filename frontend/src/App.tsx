@@ -8,7 +8,7 @@ import { Team } from "./pages/Team";
 import { Activity } from "./pages/Activity";
 import { CreateTask } from "./pages/CreateTask";
 import { AddIntern } from "./pages/AddIntern";
-import { Assistant } from "./pages/Assistant";
+import  Assistant  from "./pages/Assistant";
 import { useAuth } from "./state/auth";
 
 function Protected({ children }: { children: React.ReactNode }) {
@@ -37,7 +37,7 @@ export default function App() {
         <Route path="team" element={<Team />} />
         <Route path="interns/new" element={<AddIntern />} />
         <Route path="activity" element={<Activity />} />
-        <Route path="assistant" element={<Assistant />} />
+        <Route path="/assistant" element={<Assistant />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

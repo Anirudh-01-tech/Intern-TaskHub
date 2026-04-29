@@ -1,103 +1,180 @@
-import { useEffect, useState } from "react";
-import api from "../lib/api";
-import { Card, CardBody, CardHeader } from "../components/Card";
-import { Button } from "../components/Button";
-import { Input } from "../components/Input";
+import { useState } from "react";
 
-type Match = { path: string; excerpt: string };
+type Message = {
+  role: "user" | "assistant";
+  content: string;
+};
 
-export function Assistant() {
-  const [message, setMessage] = useState("");
-  const [answer, setAnswer] = useState<string>("Ask about navigation, features, routes, pages, or search the codebase.");
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [files, setFiles] = useState<string[]>([]);
-  const [selectedPath, setSelectedPath] = useState("");
-  const [content, setContent] = useState("");
-  const [status, setStatus] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
-  async function searchFiles(term = "") {
-    const res = await api.get("/assistant/files", { params: { q: term || undefined } });
-    setFiles(res.data.files || []);
-  }
+const sampleQuestions = [
+  "How do I create a task as a manager?",
+  "How do I add an intern?",
+  "What can an intern do in this app?",
+  "Explain the activity log.",
+  "What is the tech stack of this project?",
+  "How do I run this project?",
+];
 
-  async function ask() {
-    setStatus(null);
-    const res = await api.post("/assistant/chat", { message });
-    setAnswer(res.data.answer);
-    setMatches(res.data.matches || []);
-  }
+export default function AssistantPage() {
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: "assistant",
+      content:
+        "Hi! I am your Intern TaskHub AI Assistant. Ask me how to use the app, create tasks, add interns, understand roles, or explain the project architecture.",
+    },
+  ]);
+  const [loading, setLoading] = useState(false);
 
-  async function openFile(path: string) {
-    const res = await api.get("/assistant/file", { params: { path } });
-    setSelectedPath(res.data.path);
-    setContent(res.data.content);
-    setStatus(null);
-  }
+  const askAssistant = async (question?: string) => {
+    const message = question || input;
+    if (!message.trim()) return;
 
-  async function saveFile() {
-    setStatus(null);
+    setMessages((prev) => [...prev, { role: "user", content: message }]);
+    setInput("");
+    setLoading(true);
+
     try {
-      await api.put("/assistant/file", { path: selectedPath, content });
-      setStatus("File saved successfully.");
-    } catch (e: any) {
-      setStatus(e?.response?.data?.error || "Unable to save file.");
-    }
-  }
+      const response = await fetch(`${API_URL}/assistant/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
 
-  useEffect(() => { searchFiles(); }, []);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Assistant request failed");
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.reply },
+      ]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "I could not connect to the AI assistant. Please check that the backend is running and OPENAI_API_KEY is set.",
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader title="TaskHub Assistant" subtitle="Local guide for app navigation, codebase search, and optional source editing." />
-        <CardBody>
-          <div className="grid gap-4 lg:grid-cols-[1.1fr,0.9fr]">
-            <div className="space-y-3">
-              <Input label="Ask something" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Where do I add manager task creation?" />
-              <div className="flex gap-3">
-                <Button onClick={ask}>Ask assistant</Button>
-                <Button variant="ghost" onClick={() => setMessage("Find task routes")}>Try sample</Button>
-              </div>
-              <div className="rounded-2xl border border-slate-800 bg-slate-950/30 p-4 text-sm text-slate-300">{answer}</div>
-              <div className="space-y-3">
-                {matches.map((match) => (
-                  <button key={match.path} className="w-full rounded-2xl border border-slate-800 bg-slate-950/30 p-4 text-left hover:bg-slate-900/40" onClick={() => openFile(match.path)}>
-                    <div className="text-sm font-semibold text-slate-100">{match.path}</div>
-                    <div className="mt-2 text-xs text-slate-400">{match.excerpt}</div>
-                  </button>
-                ))}
-                {matches.length === 0 ? <div className="text-sm text-slate-500">No file matches yet.</div> : null}
-              </div>
+    <div className="min-h-screen bg-slate-100 p-6">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-6 rounded-2xl bg-white p-6 shadow-sm">
+          <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">
+            AI Assistant
+          </p>
+          <h1 className="mt-2 text-3xl font-bold text-slate-900">
+            Intern TaskHub Assistant
+          </h1>
+          <p className="mt-2 text-slate-600">
+            Ask about app navigation, manager tasks, intern workflows, activity
+            logs, setup steps, or project architecture.
+          </p>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
+          <div className="rounded-2xl bg-white shadow-sm">
+            <div className="border-b border-slate-200 p-4">
+              <h2 className="text-lg font-semibold text-slate-900">
+                Chat with assistant
+              </h2>
+              <p className="text-sm text-slate-500">
+                This assistant uses project context to answer questions about
+                Intern TaskHub.
+              </p>
             </div>
 
-            <div className="space-y-4">
-              <div className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4">
-                <div className="mb-3 text-sm font-semibold text-slate-100">Browse source files</div>
-                <Input value={query} onChange={(e) => { const value = e.target.value; setQuery(value); searchFiles(value); }} placeholder="Filter files..." />
-                <div className="mt-3 max-h-64 space-y-2 overflow-auto pr-1">
-                  {files.map((file) => (
-                    <button key={file} className="block w-full rounded-xl border border-slate-800 bg-slate-950/30 px-3 py-2 text-left text-xs text-slate-300 hover:bg-slate-900/40" onClick={() => openFile(file)}>{file}</button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-sm font-semibold text-slate-100">File editor</div>
-                    <div className="text-xs text-slate-500">{selectedPath || "Open a file to inspect it"}</div>
+            <div className="h-[460px] space-y-4 overflow-y-auto p-4">
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  }`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                      message.role === "user"
+                        ? "bg-blue-600 text-white"
+                        : "bg-slate-100 text-slate-800"
+                    }`}
+                  >
+                    {message.content}
                   </div>
-                  <Button onClick={saveFile} disabled={!selectedPath}>Save file</Button>
                 </div>
-                <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={18} className="mt-3 w-full rounded-xl border border-slate-800 bg-slate-950/40 px-3 py-2 font-mono text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400/50" placeholder="File contents will appear here..." />
-                <div className="mt-2 text-xs text-slate-500">Saving works only when the backend runs with ENABLE_FILE_EDITING=true.</div>
-                {status ? <div className="mt-3 rounded-xl border border-slate-800 bg-slate-950/40 px-3 py-2 text-xs text-slate-300">{status}</div> : null}
+              ))}
+
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-500">
+                    Thinking...
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-slate-200 p-4">
+              <div className="flex gap-3">
+                <input
+                  value={input}
+                  onChange={(event) => setInput(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") askAssistant();
+                  }}
+                  placeholder="Ask something like: Where do I create a manager task?"
+                  className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+                <button
+                  onClick={() => askAssistant()}
+                  disabled={loading}
+                  className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+                >
+                  Ask
+                </button>
               </div>
             </div>
           </div>
-        </CardBody>
-      </Card>
+
+          <div className="rounded-2xl bg-white p-5 shadow-sm">
+            <h2 className="text-lg font-semibold text-slate-900">
+              Try sample questions
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Use these during your demo to show the assistant quickly.
+            </p>
+
+            <div className="mt-4 space-y-3">
+              {sampleQuestions.map((question) => (
+                <button
+                  key={question}
+                  onClick={() => askAssistant(question)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm text-slate-700 hover:border-blue-300 hover:bg-blue-50"
+                >
+                  {question}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-6 rounded-xl bg-blue-50 p-4 text-sm text-blue-800">
+              <p className="font-semibold">Demo tip</p>
+              <p className="mt-1">
+                Ask: “How do I create a task as a manager?” This shows the main
+                feature clearly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

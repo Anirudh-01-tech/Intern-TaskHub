@@ -28,6 +28,9 @@ services:
       SEED_ON_BOOT: "true"
       PROJECT_ROOT: "/workspace"
       ENABLE_FILE_EDITING: "false"
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      AI_ASSISTANT_ENABLED: "true"
     depends_on:
       db:
         condition: service_healthy
