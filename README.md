@@ -1,4 +1,4 @@
-# Intern TaskHub — Full-Stack (Plug & Play)
+# Intern TaskHub — Full-Stack
 
 ## Tech stack
 - Backend: Node.js (Express)  Prisma  PostgreSQL  JWT  Zod validation
@@ -7,7 +7,7 @@
 
 ---
 
-## Quick start (Docker — easiest)
+## Quick start
 1) Install Docker Desktop
 2) From project root:
 
