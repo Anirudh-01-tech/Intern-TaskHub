@@ -147,11 +147,8 @@ export default function AssistantPage() {
 
           <div className="rounded-2xl bg-white p-5 shadow-sm">
             <h2 className="text-lg font-semibold text-slate-900">
-              Try sample questions
+              Frequently asked Questions
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Use these during your demo to show the assistant quickly.
-            </p>
 
             <div className="mt-4 space-y-3">
               {sampleQuestions.map((question) => (
@@ -165,13 +162,6 @@ export default function AssistantPage() {
               ))}
             </div>
 
-            <div className="mt-6 rounded-xl bg-blue-50 p-4 text-sm text-blue-800">
-              <p className="font-semibold">Demo tip</p>
-              <p className="mt-1">
-                Ask: “How do I create a task as a manager?” This shows the main
-                feature clearly.
-              </p>
-            </div>
           </div>
         </div>
       </div>

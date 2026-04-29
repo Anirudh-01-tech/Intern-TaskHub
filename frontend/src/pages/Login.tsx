@@ -36,9 +36,6 @@ export function Login() {
           <div className="mb-6">
             <div className="text-xs text-slate-400">Intern TaskHub</div>
             <h1 className="text-3xl font-semibold tracking-tight">Sign in</h1>
-            <p className="mt-2 text-sm text-slate-400">
-              Use the seeded demo users or create your own account.
-            </p>
           </div>
 
           <Card>
@@ -65,10 +62,6 @@ export function Login() {
               </form>
             </CardBody>
           </Card>
-
-          <p className="mt-6 text-center text-xs text-slate-500">
-            Backend API: <span className="text-slate-300">{import.meta.env.VITE_API_URL || "http://localhost:4000"}</span>
-          </p>
         </div>
       </div>
     </div>
