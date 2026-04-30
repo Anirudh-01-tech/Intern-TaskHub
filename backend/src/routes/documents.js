@@ -122,13 +122,13 @@ documentsRouter.post(
         )
       );
 
-      const updatedTask = await prisma.task.update({
-        where: { id: taskId },
-        data: {
-          status: "DONE",
-          updated_at: new Date(),
-        },
-      });
+    const updatedTask = await prisma.task.update({
+      where: { id: taskId },
+      data: {
+        status: "DONE",
+        updatedAt: new Date(),
+      },
+    });
 
       try {
         await prisma.activityLog.create({
