@@ -14,6 +14,7 @@ import { usersRouter } from "./routes/users.js";
 import { tasksRouter } from "./routes/tasks.js";
 import { activityRouter } from "./routes/activity.js";
 import { assistantRouter } from "./routes/assistant.js";
+import { documentsRouter } from "./routes/documents.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -24,6 +25,7 @@ app.set("prisma", prisma);
 app.use(helmet());
 app.use(cors({ origin: process.env.CORS_ORIGIN?.split(",") ?? "*", credentials: true }));
 app.use(express.json({ limit: "1mb" }));
+app.use("/uploads", express.static("uploads"));
 app.use(morgan("dev"));
 
 app.get("/health", (req, res) => res.json({ ok: true, service: "taskhub-backend" }));
@@ -37,6 +39,7 @@ app.use("/users", usersRouter);
 app.use("/tasks", tasksRouter);
 app.use("/activity", activityRouter);
 app.use("/assistant", assistantRouter);
+app.use("/tasks", documentsRouter);
 
 app.use(errorHandler);
 
