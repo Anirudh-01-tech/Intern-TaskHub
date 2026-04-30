@@ -60,6 +60,7 @@ model User {
   assignments  TaskAssignee[]
   comments     Comment[]
   activities   ActivityLog[] @relation("ActorActivities")
+  uploaded_documents TaskDocument[] @relation("UploadedDocuments")
 }
 
 model Task {
