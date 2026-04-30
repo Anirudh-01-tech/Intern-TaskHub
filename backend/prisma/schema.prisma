@@ -128,10 +128,10 @@ model ActivityLog {
 }
 
 model TaskDocument {
-  id           String        @id @default(uuid()) @db.Uuid
-  task_id      String        @db.Uuid
-  uploaded_by  String        @db.Uuid
-  type         document_type @default(TASK_ATTACHMENT)
+  id            String        @id @default(cuid())
+  task_id       String
+  uploaded_by   String
+  type          document_type @default(TASK_ATTACHMENT)
 
   original_name String
   stored_name   String
