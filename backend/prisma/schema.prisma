@@ -79,6 +79,7 @@ model Task {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  documents TaskDocument[]
 
   @@index([status])
   @@index([dueDate])
