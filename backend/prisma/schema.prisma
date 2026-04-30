@@ -12,6 +12,11 @@ enum Role {
   INTERN
 }
 
+enum document_type {
+  TASK_ATTACHMENT
+  COMPLETION_PROOF
+}
+
 enum TaskStatus {
   TODO
   IN_PROGRESS
