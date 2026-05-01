@@ -23,10 +23,6 @@ function mapDocument(doc) {
   };
 }
 
-/**
- * Manager or Intern uploads documents to an existing task.
- * Used after manager creates a task.
- */
 documentsRouter.post(
   "/:id/documents",
   requireAuth,
@@ -80,9 +76,7 @@ documentsRouter.post(
   }
 );
 
-/**
- * Intern completes a task and uploads proof/completion documents.
- */
+
 documentsRouter.post(
   "/:id/complete-with-documents",
   requireAuth,
