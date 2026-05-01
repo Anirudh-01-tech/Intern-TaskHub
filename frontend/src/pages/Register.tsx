@@ -38,9 +38,6 @@ export function Register() {
           <div className="mb-6">
             <div className="text-xs text-slate-400">Intern TaskHub</div>
             <h1 className="text-3xl font-semibold tracking-tight">Create account</h1>
-            <p className="mt-2 text-sm text-slate-400">
-              For a class demo, create an Intern or Manager account.
-            </p>
           </div>
 
           <Card>
