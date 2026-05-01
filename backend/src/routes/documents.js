@@ -153,9 +153,6 @@ documentsRouter.post(
   }
 );
 
-/**
- * Get all documents for a task.
- */
 documentsRouter.get("/:id/documents", requireAuth, async (req, res, next) => {
   try {
     const prisma = req.app.get("prisma");
