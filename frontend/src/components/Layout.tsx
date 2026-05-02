@@ -73,11 +73,17 @@ export function Layout() {
 
           <nav className="mt-8 space-y-1">
             <NavItem to="/" icon={<DashboardIcon />} onClick={closeMenu}>Home</NavItem>
+
             {user?.role === "MANAGER" ? <NavItem to="/team" icon={<UsersIcon />} onClick={closeMenu}>Interns</NavItem> : null}
+
             {user?.role === "MANAGER" ? <NavItem to="/tasks/new" icon={<ClipboardIcon />} onClick={closeMenu}>Add Task</NavItem> : null}
+
+            
             {user?.role === "MANAGER" ? <NavItem to="/interns/new" icon={<PlusIcon />} onClick={closeMenu}>Add Intern</NavItem> : null}
+            
             {user?.role === "MANAGER" ? <NavItem to="/activity" icon={<ActivityIcon />} onClick={closeMenu}>Tools</NavItem> : null}
             <NavItem to="/assistant" icon={<SparklesIcon />} onClick={closeMenu}>Assistant</NavItem>
+            
           </nav>
 
           <div className="mt-auto space-y-4">
