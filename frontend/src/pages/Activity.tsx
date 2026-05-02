@@ -40,11 +40,17 @@ export function Activity() {
           <div className="space-y-3">
             {items.map((a) => (
               <div key={a.id} className="rounded-2xl border border-slate-800 bg-slate-950/40 p-4">
+
                 <div className="flex flex-wrap items-center justify-between gap-2">
+
                   <div className="text-sm text-slate-100">
+
                     <span className="font-semibold">{a.type}</span>{" "}
+
                     <span className="text-slate-400">by</span>{" "}
+
                     <span className="font-semibold">{a.actor ? a.actor.name : "System"}</span>
+                    
                     {a.actor ? <span className="text-xs text-slate-500"> ({a.actor.role})</span> : null}
                     {a.task ? <span className="ml-2 text-xs text-slate-400">• Task: {a.task.title}</span> : null}
                   </div>
