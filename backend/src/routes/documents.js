@@ -29,7 +29,7 @@ function mapDocument(doc) {
     fileUrl: doc.file_url,
 
     createdAt: doc.created_at,
-    
+
   };
 }
 
@@ -64,12 +64,19 @@ documentsRouter.post(
           prisma.taskDocument.create({
             data: {
               task_id: taskId,
+
               uploaded_by: userId,
+
               type: "TASK_ATTACHMENT",
+
               original_name: file.originalname,
+
               stored_name: file.filename,
+
               mime_type: file.mimetype,
+
               size_bytes: file.size,
+              
               file_url: `/uploads/${file.filename}`,
             },
           })
