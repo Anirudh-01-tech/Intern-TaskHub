@@ -68,27 +68,38 @@ export default function AssistantPage() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-6">
+
       <div className="mx-auto max-w-5xl">
+
         <div className="mb-6 rounded-2xl bg-white p-6 shadow-sm">
+
           <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">
+
             AI Assistant
           </p>
           <h1 className="mt-2 text-3xl font-bold text-slate-900">
+
             Intern TaskHub Assistant
           </h1>
+
           <p className="mt-2 text-slate-600">
+
             Ask about app navigation, manager tasks, intern workflows, activity
             logs, setup steps, or project architecture.
           </p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
+
           <div className="rounded-2xl bg-white shadow-sm">
+
             <div className="border-b border-slate-200 p-4">
+
               <h2 className="text-lg font-semibold text-slate-900">
                 Chat with assistant
               </h2>
               <p className="text-sm text-slate-500">
+                
                 This assistant uses project context to answer questions about
                 Intern TaskHub.
               </p>
