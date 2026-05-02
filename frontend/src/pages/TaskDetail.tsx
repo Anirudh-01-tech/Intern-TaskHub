@@ -61,14 +61,23 @@ export function TaskDetail() {
   const { user } = useAuth();
 
   const [task, setTask] = useState<Task | null>(null);
+
   const [comment, setComment] = useState("");
+
   const [privateNote, setPrivateNote] = useState(false);
+
   const [activity, setActivity] = useState<ActivityItem[]>([]);
+
   const [documents, setDocuments] = useState<TaskDocument[]>([]);
+
   const [managerFiles, setManagerFiles] = useState<File[]>([]);
+
   const [completionFiles, setCompletionFiles] = useState<File[]>([]);
+
   const [uploading, setUploading] = useState(false);
+
   const [completing, setCompleting] = useState(false);
+  
   const [err, setErr] = useState<string | null>(null);
 
   async function load() {
