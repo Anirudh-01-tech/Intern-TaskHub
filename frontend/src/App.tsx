@@ -29,15 +29,23 @@ export default function App() {
           <Protected>
             <Layout />
           </Protected>
+
         }
       >
         <Route index element={<Dashboard />} />
+
         <Route path="tasks/new" element={<CreateTask />} />
+
         <Route path="tasks/:id" element={<TaskDetail />} />
+
         <Route path="team" element={<Team />} />
+
         <Route path="interns/new" element={<AddIntern />} />
+
         <Route path="activity" element={<Activity />} />
+        
         <Route path="/assistant" element={<Assistant />} />
+
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
@@ -45,5 +53,5 @@ export default function App() {
   );
 
 
-  
+
 }
