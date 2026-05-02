@@ -35,10 +35,15 @@ const openApiSpec = buildOpenApiSpec();
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
 
 app.use("/auth", authRouter);
+
 app.use("/users", usersRouter);
+
 app.use("/tasks", tasksRouter);
+
 app.use("/activity", activityRouter);
+
 app.use("/assistant", assistantRouter);
+
 app.use("/tasks", documentsRouter);
 
 app.use(errorHandler);
