@@ -31,11 +31,17 @@ export function AddIntern() {
     setSaving(true);
     try {
       const res = await api.post("/users", { name, email, password });
+
       setSuccess(`Intern ${res.data.intern.name} created successfully.`);
+
       setName("");
+
       setEmail("");
+
       setPassword("");
+
       await loadInterns();
+      
     } catch (e: any) {
       setErr(e?.response?.data?.error || "Failed to create intern");
     } finally {

@@ -33,10 +33,15 @@ export function Login() {
 
   return (
     <div className="min-h-screen bg-slate-950">
+
       <div className="mx-auto flex max-w-6xl items-center justify-center px-4 py-14">
+
         <div className="w-full max-w-md">
+
           <div className="mb-6">
+
             <div className="text-xs text-slate-400">Intern TaskHub</div>
+            
             <h1 className="text-3xl font-semibold tracking-tight">Sign in</h1>
           </div>
 

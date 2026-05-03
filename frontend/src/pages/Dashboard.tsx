@@ -29,10 +29,15 @@ function statusLabel(s: Task["status"]) {
 
 export function Dashboard() {
   const { user } = useAuth();
+
   const [tasks, setTasks] = useState<Task[]>([]);
+
   const [metrics, setMetrics] = useState<any>(null);
+
   const [status, setStatus] = useState<string>("");
+
   const [overdue, setOverdue] = useState(false);
+
   const [q, setQ] = useState("");
 
   async function load() {
@@ -51,8 +56,11 @@ export function Dashboard() {
 
   const summaryCards = [
     { label: "To do", value: metrics?.byStatus?.TODO ?? 0 },
+
     { label: "In progress", value: metrics?.byStatus?.IN_PROGRESS ?? 0 },
+
     { label: "Review", value: metrics?.byStatus?.READY_FOR_REVIEW ?? 0 },
+    
     { label: "Overdue", value: metrics?.overdueCount ?? 0 },
   ];
 

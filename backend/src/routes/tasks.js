@@ -70,10 +70,15 @@ tasksRouter.get("/", requireAuth, validate(listSchema), async (req, res, next) =
 const createSchema = z.object({
   body: z.object({
     title: z.string().min(3),
+
     description: z.string().min(5),
+
     priority: z.enum(["LOW", "MEDIUM", "HIGH"]).optional(),
+
     dueDate: z.string().datetime().optional(),
+
     assigneeIds: z.array(z.string()).min(1),
+    
   }),
   query: z.any(),
   params: z.any(),

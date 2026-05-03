@@ -11,15 +11,25 @@ function getUserId(req) {
 function mapDocument(doc) {
   return {
     id: doc.id,
+
     taskId: doc.task_id,
+
     uploadedBy: doc.uploaded_by,
+
     type: doc.type,
+
     originalName: doc.original_name,
+
     storedName: doc.stored_name,
+
     mimeType: doc.mime_type,
+
     sizeBytes: doc.size_bytes,
+
     fileUrl: doc.file_url,
+
     createdAt: doc.created_at,
+
   };
 }
 
@@ -54,12 +64,19 @@ documentsRouter.post(
           prisma.taskDocument.create({
             data: {
               task_id: taskId,
+
               uploaded_by: userId,
+
               type: "TASK_ATTACHMENT",
+
               original_name: file.originalname,
+
               stored_name: file.filename,
+
               mime_type: file.mimetype,
+
               size_bytes: file.size,
+              
               file_url: `/uploads/${file.filename}`,
             },
           })
