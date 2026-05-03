@@ -55,12 +55,6 @@ export function Login() {
                     Create an account
                   </Link>
                 </div>
-
-                <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-3 text-xs text-slate-300">
-                  <div className="font-semibold text-slate-200">Demo users</div>
-                  <div className="mt-1">Manager: manager@taskhub.dev / Passw0rd!</div>
-                  <div>Intern: intern@taskhub.dev / Passw0rd!</div>
-                </div>
               </form>
             </CardBody>
           </Card>
