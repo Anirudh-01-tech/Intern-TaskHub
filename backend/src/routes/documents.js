@@ -156,7 +156,7 @@ documentsRouter.post(
           },
         });
       } catch {
-        // Activity logging should not block task completion.
+        
       }
 
       return res.json({
@@ -168,7 +168,7 @@ documentsRouter.post(
       next(error);
     }
 
-    
+
   }
 );
 
